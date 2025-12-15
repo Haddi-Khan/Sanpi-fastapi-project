@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/snapi2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapi - User Settings</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-left">
+                <a href="/">Home</a>
+                <a href="/add-photos-videos">Add Photos & Videos</a>
+                <a href="/about-us">About Us</a>
+                <a href="/contact-us">Contact Us</a>
+            </div>
+            <div class="nav-right">
+                <div class="auth-group">
+                    {% if user %}
+                        <a href="/settings" class="settings-link" style="color: white; text-decoration: none; font-weight: bold; padding: 6px 0;">
+                            ⚙️ Settings
+                        </a>
+                        <span class="welcome-message">Welcome, {{ user.username }}!</span>
+                        <a href="/logout">
+                            <button class="logout-btn">
+                                🔓 Logout
+                            </button>
+                        </a>
+                    {% else %}
+                        <a href="/login">
+                            <button class="login-btn">
+                                🔒 Login
+                            </button>
+                        </a>
+                        <a href="/signup">
+                            <button class="signup-btn">
+                                👤 Sign up
+                            </button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+
+        {# Apply the main container style defined in style.css #}
+        <section class="settings-container">
+            <h2>User Profile & Settings</h2>
+
+            {# Display success/error messages from URL query params #}
+            {% if request.query_params.message %}
+                <div class="message-box success-message">{{ request.query_params.message }}</div>
+            {% elif request.query_params.error %}
+                <div class="message-box error-message">{{ request.query_params.error }}</div>
+            {% endif %}
+
+            {# Profile Details Group #}
+            <div class="settings-group">
+                <h3>Profile Details</h3>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email or "N/A" }}</p>
+            </div>
+
+            {# Change Password Group #}
+            <div class="settings-group">
+                <h3>Change Password</h3>
+                <form method="POST" action="/change-password">
+                    <label for="old_password">Current Password</label>
+                    <input type="password" id="old_password" name="old_password" placeholder="Current Password" required>
+
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" placeholder="New Password" required>
+
+                    <button type="submit" class="submit-btn">Update Password</button>
+                </form>
+            </div>
+
+            {# Danger Zone Group #}
+            <div class="settings-group" style="border-color: #e94e77;">
+                <h3 style="color: #e94e77; border-bottom-color: #e94e77;">Danger Zone</h3>
+                <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+
+                <form method="POST" action="/delete-account" onsubmit="return confirm('Are you absolutely sure you want to delete your account? This is permanent.');">
+                    <button type="submit" class="delete-btn">Delete Account</button>
+                </form>
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+</html>

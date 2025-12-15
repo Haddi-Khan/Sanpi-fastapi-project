@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/static/snapi2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapi - Add Media</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/add-photos-videos">Add Photos & Videos</a>
+            <a href="/about-us">About Us</a>
+            <a href="/contact-us">Contact Us</a>
+        </div>
+        <div class="nav-right">
+            <div class="auth-group">
+                {% if user %}
+                    <a href="/settings" class="settings-link" style="color: white; text-decoration: none; font-weight: bold; padding: 6px 0;">
+                        ⚙️ Settings
+                    </a>
+                    <span class="welcome-message">Welcome, {{ user.username }}!</span>
+                    <a href="/logout">
+                        <button class="logout-btn">
+                            🔓 Logout
+                        </button>
+                    </a>
+                {% else %}
+                    <a href="/login">
+                        <button class="login-btn">
+                            🔒 Login
+                        </button>
+                    </a>
+                    <a href="/signup">
+                        <button class="signup-btn">
+                            👤 Sign up
+                        </button>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="main-content">
+        <section id="media-upload-section">
+            <h2>Add Photos & Videos</h2>
+            <p>
+                Use this section to seamlessly upload and prepare your photos and videos for sharing on Snapi.
+            </p>
+
+            {% if request.query_params.get("message") %}
+                <div style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; margin-bottom: 20px; border-radius: 5px; text-align: center;">
+                    {{ request.query_params.get("message") }}
+                </div>
+            {% endif %}
+
+            <h3>File Selection</h3>
+            <p>
+                You can select a single file (photo or video) to upload at a time. Ensure your media is ready for high-definition viewing.
+            </p>
+            <form class="simple-upload-form" action="/upload-media" method="post" enctype="multipart/form-data">
+                <input type="file" id="mediaFile" name="file" accept="image/*,video/*" class="file-input-style" required>
+                <button type="submit" class="upload-btn-style">Upload File</button>
+            </form>
+
+            <h3>Technical Requirements</h3>
+            <ul>
+                <li><strong>Max Size:</strong> Keep videos under 500MB and photos under 50MB.</li>
+                <li><strong>Format Support:</strong> We support JPG, PNG, GIF, MP4, and MOV formats.</li>
+                <li><strong>Resolution:</strong> High-resolution media is recommended for optimal display quality.</li>
+                <li><strong>Security:</strong> All uploaded files are encrypted and protected during transfer.</li>
+            </ul>
+
+            <h3>Upload Commitment</h3>
+            <p>
+                By uploading, you confirm that you own the content or have the necessary rights.
+            </p>
+        </section>
+
+        <section id="user-media-gallery" style="margin-top: 50px;">
+            <h2>Your Uploaded Media ({% if user_media %}{{ user_media|length }}{% else %}0{% endif %} Total)</h2>
+
+            {% if user_media %}
+                <div class="media-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+
+                    {% for item in user_media %}
+                        <div class="media-item-card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+
+                            <div class="media-preview" style="height: 200px; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                                {% if item.file_type == 'image' %}
+                                    <img src="/{{ item.file_path }}" alt="{{ item.filename }}"
+                                         style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                {% elif item.file_type == 'video' %}
+                                    <video controls style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                        <source src="/{{ item.file_path }}" type="video/{{ item.filename.split('.')[-1] }}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                {% else %}
+                                    <p style="padding: 10px;">File: {{ item.filename }}</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="media-details" style="padding: 10px; font-size: 0.9em;">
+                                <p style="margin: 0;"><strong>Type:</strong> {{ item.file_type|capitalize }}</p>
+                                <p style="margin: 0;"><strong>Date:</strong> {{ item.upload_date.strftime('%Y-%m-%d %H:%M') }}</p>
+
+                                <form action="/share-media" method="post" style="margin-top:5px;">
+                                    <input type="hidden" name="media_id" value="{{ item.id }}">
+                                    <input type="text" name="share_with_username" placeholder="Enter username to share" required>
+                                    <button type="submit" style="margin-top:5px;">Share</button>
+                                </form>
+
+                                <form action="/delete-media/{{ item.id }}" method="post" style="margin-top: 10px;">
+                                    <button type="submit"
+                                            onclick="return confirm('Are you sure you want to delete this media item? This action is irreversible.')"
+                                            style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; width: 100%;">
+                                        🗑️ Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            {% else %}
+                <p style="text-align: center; color: #888; padding: 20px;">You haven't uploaded any media yet. Use the form above to get started!</p>
+            {% endif %}
+        </section>
+
+        <hr style="margin-top:40px;">
+
+        <section style="margin-top: 20px;">
+            <h2>Media Shared With You</h2>
+
+            {% if shared_media %}
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin-top:20px;">
+                    {% for m in shared_media %}
+                        <div style="border:1px solid #ddd;border-radius:8px;padding:10px;background:#fafafa;">
+                            {% if m.file_type == 'image' %}
+                                <img src="/{{ m.file_path }}" style="max-width:100%;border-radius:6px;">
+                            {% else %}
+                                <video src="/{{ m.file_path }}" controls style="max-width:100%;border-radius:6px;"></video>
+                            {% endif %}
+                            <p style="margin-top:8px;"><strong>Shared By:</strong> {{ m.owner.username if m.owner else 'Unknown' }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="color:#888;margin-top:10px;">No media has been shared with you yet.</p>
+            {% endif %}
+        </section>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/snapi2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapi - Sign Up</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-left">
+                <a href="/">Home</a>
+                <a href="/add-photos-videos">Add Photos & Videos</a>
+                <a href="/about-us">About Us</a>
+                <a href="/contact-us">Contact Us</a>
+            </div>
+            <div class="nav-right">
+                <div class="auth-group">
+                    {% if user %}
+                        <span class="welcome-message">Welcome, {{ user.username }}!</span>
+                        <a href="/logout">
+                            <button class="logout-btn">
+                                🔓 Logout
+                            </button>
+                        </a>
+                    {% else %}
+                        <a href="/login">
+                            <button class="login-btn">
+                                🔒 Login
+                            </button>
+                        </a>
+                        <a href="/signup">
+                            <button class="signup-btn">
+                                👤 Sign up
+                            </button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+
+        </nav>
+    </header>
+
+    <div class="main-content">
+
+        <section class="login-container">
+            <h2>Sign Up</h2>
+
+            <form method="post" action="/signup">
+                <input type="email" name="email" placeholder="Email" required><br><br>
+                <input type="text" name="username" placeholder="Username" required><br><br>
+                <input type="password" name="password" placeholder="Password" required><br><br>
+                <button type="submit">Sign Up</button>
+            </form>
+
+            <a href="/login" class="auth-switch-link">Already have an account? Log In</a>
+        </section>
+
+    </div>
+
+</body>
+</html>

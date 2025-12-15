@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/snapi2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapi - Home</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body class="home-page">
+
+<header>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/add-photos-videos">Add Photos & Videos</a>
+            <a href="/about-us">About Us</a>
+            <a href="/contact-us">Contact Us</a>
+        </div>
+        <div class="nav-right">
+            <div class="auth-group">
+                {% if user %}
+                    <a href="/settings" class="settings-link" style="color: white; text-decoration: none; font-weight: bold; padding: 6px 0;">
+                        ⚙️ Settings
+                    </a>
+                    <span class="welcome-message">Welcome, {{ user.username }}!</span>
+                    <a href="/logout">
+                        <button class="logout-btn">
+                            🔓 Logout
+                        </button>
+                    </a>
+                {% else %}
+                    <a href="/login">
+                        <button class="login-btn">
+                            🔒 Login
+                        </button>
+                    </a>
+                    <a href="/signup">
+                        <button class="signup-btn">
+                            👤 Sign up
+                        </button>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="hero">
+    <img src="/static/snapi2.png" alt="Snapi Logo" class="logo">
+    <h1>Welcome to Snapi 👋</h1>
+</div>
+
+<p class="home-tagline">Capture, share, and relive life's most precious moments.</p>
+
+<button class="cta-button" id="start-camera-btn">Start Snapping Today</button>
+
+<div id="camera-container" style="display: none; text-align: center; margin-top: 30px;">
+    <h2>Live Camera Feed</h2>
+
+    <div id="upload-status" style="padding: 10px; margin-bottom: 15px; border-radius: 4px; display: none;"></div>
+
+    <video id="video-stream" autoplay playsinline style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"></video>
+    <canvas id="canvas-capture" style="display: none;"></canvas>
+
+    <div style="margin-top: 15px;">
+        <button id="take-photo-btn" disabled>Take Photo</button>
+        <button id="upload-photo-btn" style="display:none;">Upload Photo</button>
+        <button id="record-video-btn" disabled>Record Video</button>
+        <button id="stop-record-btn" style="display:none;">Stop Recording</button>
+        <button id="upload-video-btn" style="display:none;">Upload Video</button>
+        <button id="stop-camera-btn">Stop Camera</button>
+    </div>
+
+    <div id="photo-preview-container" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+        <h3>Captured Photo Preview</h3>
+        <img id="photo-preview" style="max-width: 100%; display:none; border-radius: 8px;">
+    </div>
+
+    <div id="video-preview-container" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+        <h3>Recorded Video Preview</h3>
+        <video id="video-preview" controls style="max-width: 100%; display:none; border-radius: 8px;"></video>
+    </div>
+</div>
+
+<script src="/static/camera.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/static/snapi2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapi - Contact Us</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<header>
+<nav class="navbar">
+    <div class="nav-left">
+        <a href="/">Home</a>
+        <a href="/add-photos-videos">Add Photos & Videos</a>
+        <a href="/about-us">About Us</a>
+        <a href="/contact-us">Contact Us</a>
+    </div>
+    <div class="nav-right">
+            <div class="auth-group">
+                {% if user %}
+                    <a href="/settings" class="settings-link" style="color: white; text-decoration: none; font-weight: bold; padding: 6px 0;">
+                        ⚙️ Settings
+                    </a>
+                    <span class="welcome-message">Welcome, {{ user.username }}!</span>
+                    <a href="/logout">
+                        <button class="logout-btn">
+                            🔓 Logout
+                        </button>
+                    </a>
+                {% else %}
+                    <a href="/login">
+                        <button class="login-btn">
+                            🔒 Login
+                        </button>
+                    </a>
+                    <a href="/signup">
+                        <button class="signup-btn">
+                            👤 Sign up
+                        </button>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+</nav>
+<body>
+
+    <div class="main-content">
+        <section id="contact-us">
+
+            {# --- CONDITIONAL CONTENT --- #}
+            {% if success %}
+                <div style="text-align: center; padding: 50px;">
+                    <h2 style="color: #4a90e2;">Thank you for sharing your thoughts!</h2>
+                    <p style="font-size: 18px; margin-bottom: 40px;">
+                        We have received your message and will get back to you soon.
+                    </p>
+
+                    <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #cceeff; text-align: left;">
+                        <h4 style="color: #8d4b7c; margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Your Submission Details:</h4>
+                        <p><strong>Name:</strong> {{ submitted_name }}</p>
+                        <p><strong>Email:</strong> {{ submitted_email }}</p>
+                        <p><strong>Subject:</strong> {{ submitted_subject }}</p>
+                        <p><strong>Message:</strong></p>
+                        <p style="white-space: pre-wrap; background-color: #ffffff; padding: 10px; border-radius: 4px; border: 1px solid #eee;">{{ submitted_message }}</p>
+                    </div>
+
+                    <a href="/">
+                        <button class="cta-button" style="background-color: #4a90e2; color: white;">
+                            Go Back to Home Page
+                        </button>
+                    </a>
+                </div>
+
+            {% else %}
+                {# --- ORIGINAL FORM CONTENT (Visible if success is not True) --- #}
+                <h2>Get In Touch With Snapi</h2>
+                <p style="text-align: center; margin-bottom: 30px;">
+                    We'd love to hear from you! Whether you have feedback, a question about your account, or need technical support, our team is ready to assist.
+                </p>
+
+                <form class="contact-form" action="/contact-us" method="POST">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+
+                    <button type="submit">Send Message</button>
+                </form>
+
+                <div class="contact-info">
+                    <div class="info-item">
+                        <h4>Customer Support</h4>
+                        <p>support@snapi.com</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Business Inquiries</h4>
+                        <p>hello@snapi.com</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Follow Us</h4>
+                        <p><a style="color: black; text-decoration: none;">@SnapiOfficial</a></p>
+                    </div>
+                </div>
+
+            {% endif %}
+            {# --------------------------------- #}
+
+        </section>
+    </div>
+
+</body>
+</html>
